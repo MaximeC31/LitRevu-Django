@@ -1,0 +1,11 @@
+{% extends "contacts/base.html" %}
+{% block content %}
+<h1>Liste des personnes</h1>
+<ul>
+  {% for person in persons %}
+  <li>{{ person.prenom }} {{ person.nom }}</li>
+  {% empty %}
+  <li>Aucune personne trouvée.</li>
+  {% endfor %}
+</ul>
+{% endblock %}
