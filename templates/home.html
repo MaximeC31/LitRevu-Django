@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}
+  LITRevu - Plateforme de critiques littéraires
+{% endblock title %}
+{% block description %}
+  LITRevu est une plateforme de critiques littéraires qui offre une expérience immersive pour les amateurs de lecture.
+{% endblock description %}
+{% block content %}
+  <section class="container mx-auto max-md:py-8 min-h-[calc(100vh-128px)] flex flex-col gap-4 p-32">
+    <h1 class="text-[64px] max-md:text-[36px] font-black uppercase">LITRevu</h1>
+    <p class="text-neutral-700">Les critiques de livres et d'articles, par une communauté de confiance.</p>
+    <div class="flex gap-8 mt-8">
+      <a href="#"
+         class="items-center justify-center font-bold uppercase border-2 border-black bg-black text-white shadow-[4px_4px_0_#000] px-6 py-3 hover:scale-105 transition-transform duration-300">Connexion</a>
+      <a href="#"
+         class="items-center justify-center font-bold uppercase border-2 border-black bg-white text-black shadow-[4px_4px_0_#000] px-6 py-3 hover:scale-105 transition-transform duration-300">S'inscrire</a>
+    </div>
+  </section>
+{% endblock content %}
