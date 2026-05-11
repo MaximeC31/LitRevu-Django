@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}
+    LITRevu - Inscription
+{% endblock title %}
+{% block description %}
+    Rejoignez LITRevu pour partager vos critiques de livres et découvrir de nouvelles lectures.
+{% endblock description %}
+{% block content %}
+    <section class="container mx-auto max-md:py-8 min-h-[calc(100vh-128px)] flex flex-col gap-4 justify-center items-center">
+        <div class="bg-white p-8 border-4 border-black shadow-[4px_4px_0_#000] w-full max-w-lg">
+            <h1 class="text-4xl font-extrabold mb-8">Inscription</h1>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-6">
+                    <label for="{{ form.username.id_for_label }}" class="sr-only">Nom d'utilisateur</label>
+                    <input type="text"
+                           name="{{ form.username.name }}"
+                           id="{{ form.username.id_for_label }}"
+                           placeholder="Nom d'utilisateur"
+                           class="w-full bg-white text-black px-3 py-3 border-2 border-black h-12 ">
+                    {% if form.username.errors %}<p class="text-sm font-bold mt-1">{{ form.username.errors.0 }}</p>{% endif %}
+                </div>
+                <div class="mb-6">
+                    <label for="{{ form.password1.id_for_label }}" class="sr-only">Mot de passe</label>
+                    <input type="password"
+                           name="{{ form.password1.name }}"
+                           id="{{ form.password1.id_for_label }}"
+                           placeholder="Mot de passe"
+                           class="w-full bg-white text-black px-3 py-3 border-2 border-black h-12 ">
+                    {% if form.password1.errors %}<p class="text-sm font-bold mt-1">{{ form.password1.errors.0 }}</p>{% endif %}
+                </div>
+                <div class="mb-8">
+                    <label for="{{ form.password2.id_for_label }}" class="sr-only">Confirmer mot de passe</label>
+                    <input type="password"
+                           name="{{ form.password2.name }}"
+                           id="{{ form.password2.id_for_label }}"
+                           placeholder="Confirmer mot de passe"
+                           class="w-full bg-white text-black px-3 py-3 border-2 border-black h-12 ">
+                    {% if form.password2.errors %}<p class="text-sm font-bold mt-1">{{ form.password2.errors.0 }}</p>{% endif %}
+                </div>
+                <button type="submit"
+                        class="w-full bg-black text-white text-sm font-bold uppercase px-6 py-3 border-4 border-black shadow-[4px_4px_0_#000] hover:scale-105 transition-transform duration-300">
+                    S'inscrire
+                </button>
+            </form>
+            <div class="mt-8 text-center">
+                <p>Déjà un compte ?</p>
+                <a href="#" class="font-semibold underline mt-2 inline-block">Se connecter</a>
+            </div>
+        </div>
+    </section>
+{% endblock content %}
