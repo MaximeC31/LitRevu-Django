@@ -9,10 +9,10 @@
     <section class="container mx-auto max-md:py-8 min-h-[calc(100vh-128px)] flex flex-col gap-4 justify-center items-center py-12">
         <div class="bg-white p-8 border-4 border-black shadow-[4px_4px_0_#000] w-full max-w-lg">
             <h1 class="text-4xl font-extrabold mb-8">Inscription</h1>
-            <form method="POST">
+            <form method="post">
                 {% csrf_token %}
                 <div class="mb-6">
-                    <label for="{{ form.username.id_for_label }}" class="sr-only">Nom d'utilisateur</label>
+                    <label for="{{ form.username.id_for_label }}"j class="sr-only">Nom d'utilisateur</label>
                     <input type="text"
                            name="{{ form.username.name }}"
                            id="{{ form.username.id_for_label }}"

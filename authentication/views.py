@@ -13,8 +13,7 @@ def signup_view(request):
     if request.method == "POST":
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user)
+            form.save()
             return redirect(settings.LOGIN_REDIRECT_URL)
 
     return render(request, "authentication/signup.html", {"form": form})

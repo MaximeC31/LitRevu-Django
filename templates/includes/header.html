@@ -1,5 +1,5 @@
 <header class="sticky top-0 z-40 bg-white border-b-4 border-black h-16 px-6 flex items-center justify-between">
-   <a href="/"
+   <a href="{% url 'home' %}"
       class="text-xl font-bold transition-transform duration-300 hover:scale-105">LITReview</a>
    <nav class="flex items-center gap-6 max-md:gap-3 max-md:flex-wrap max-md:justify-end">
       {% if user.is_authenticated %}
@@ -11,7 +11,8 @@
             class="font-semibold transition-transform duration-300 hover:scale-105">Abonnements</a>
          <a href="{% url 'logout' %}"
             class="font-semibold transition-transform duration-300 hover:scale-105">Déconnexion</a>
-      {% else %}
+      {% endif %}
+      {% if not user.is_authenticated %}
          <a href="{% url 'login' %}"
             class="font-semibold transition-transform duration-300 hover:scale-105">Connexion</a>
          <a href="{% url 'signup' %}"
