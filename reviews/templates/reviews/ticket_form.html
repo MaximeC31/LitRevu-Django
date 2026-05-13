@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}
+  LITRevu - Ticket
+{% endblock title %}
+{% block description %}
+  Détails du ticket et formulaire de demande de critique.
+{% endblock description %}
+{% block content %}
+  <section class="container mx-auto max-md:py-8 min-h-[calc(100vh-128px)] flex flex-col gap-4 justify-center items-center p-16">
+    <div class="bg-white p-8 border-4 border-black shadow-[4px_4px_0_#000] w-full max-w-2xl">
+      <h1 class="text-4xl font-extrabold mb-8">Ticket</h1>
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-6">
+          <label for="{{ form.title.id_for_label }}" class="block font-bold mb-2">Titre</label>
+          {{ form.title }}
+        </div>
+        <div class="mb-6">
+          <label for="{{ form.description.id_for_label }}" class="block font-bold mb-2">Description</label>
+          {{ form.description }}
+        </div>
+        <div class="mb-8">
+          <label for="{{ form.image.id_for_label }}" class="block font-bold mb-2">Image</label>
+          {{ form.image }}
+        </div>
+        <button type="submit"
+                class="w-full bg-black text-white text-sm font-bold uppercase px-6 py-3 border-4 border-black shadow-[4px_4px_0_#000] hover:scale-105 transition-transform duration-300">
+          Enregistrer
+        </button>
+      </form>
+    </div>
+  </section>
+{% endblock content %}

@@ -118,6 +118,6 @@ AUTH_USER_MODEL = "authentication.User"
 STATIC_URL = "static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 
-LOGIN_URL = "/login/"
+LOGIN_URL = "/connexion/"
 LOGIN_REDIRECT_URL = "/"
-LOGOUT_REDIRECT_URL = "/login/"
+LOGOUT_REDIRECT_URL = "/connexion/"

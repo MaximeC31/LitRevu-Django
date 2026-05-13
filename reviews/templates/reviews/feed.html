@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}
+  LITRevu - Flux
+{% endblock title %}
+{% block description %}
+  Découvrez les dernières critiques et recommandations de la communauté.
+{% endblock description %}
+{% block content %}
+  <section class="container mx-auto max-md:py-8 min-h-[calc(100vh-128px)] flex flex-col gap-4 p-16">
+    <h1 class="text-4xl font-extrabold mb-4">Flux</h1>
+    <div class="flex gap-4 mb-6">
+      <a href="{% url 'ticket_create' %}"
+         class="bg-black text-white text-sm font-bold uppercase px-6 py-3 border-4 border-black shadow-[4px_4px_0_#000]">Demander une critique</a>
+    </div>
+  </section>
+{% endblock content %}

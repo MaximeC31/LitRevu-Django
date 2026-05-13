@@ -1,17 +1,18 @@
 from django.conf import settings
 from django.contrib.auth import login, logout
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, redirect
+from .forms import SignupForm
 
 
 def signup_view(request):
     if request.user.is_authenticated:
         return redirect(settings.LOGIN_REDIRECT_URL)
 
-    form = UserCreationForm()
+    form = SignupForm()
 
     if request.method == "POST":
-        form = UserCreationForm(request.POST)
+        form = SignupForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect(settings.LOGIN_REDIRECT_URL)

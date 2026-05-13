@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}
+  LITRevu - Supprimer ticket
+{% endblock title %}
+{% block description %}
+  Confirmer la suppression du ticket.
+{% endblock description %}
+{% block content %}
+  <section class="container mx-auto max-md:py-8 min-h-[calc(100vh-128px)] flex flex-col gap-4 justify-center items-center p-16">
+    <div class="bg-white p-8 border-4 border-black shadow-[4px_4px_0_#000] w-full max-w-2xl">
+      <h1 class="text-4xl font-extrabold mb-8">Supprimer le ticket</h1>
+      <p class="mb-8">Confirmer la suppression de « {{ ticket.title }} » ?</p>
+      <form method="post">
+        {% csrf_token %}
+        <button type="submit"
+                class="w-full bg-black text-white text-sm font-bold uppercase px-6 py-3 border-4 border-black shadow-[4px_4px_0_#000] hover:scale-105 transition-transform duration-300">
+          Supprimer
+        </button>
+      </form>
+    </div>
+  </section>
+{% endblock content %}
