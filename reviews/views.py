@@ -45,18 +45,18 @@ def ticket_edit(request, ticket_id):
     return render(request, "reviews/ticket_form.html", {"form": form})
 
 
-@login_required
-def ticket_delete(request, ticket_id):
-    try:
-        ticket = Ticket.objects.get(id=ticket_id)
-    except Ticket.DoesNotExist:
-        return redirect("feed")
+# @login_required
+# def ticket_delete(request, ticket_id):
+#     try:
+#         ticket = Ticket.objects.get(id=ticket_id)
+#     except Ticket.DoesNotExist:
+#         return redirect("feed")
 
-    if ticket.user != request.user:
-        return redirect("feed")
+#     if ticket.user != request.user:
+#         return redirect("feed")
 
-    if request.method == "POST":
-        ticket.delete()
-        return redirect("feed")
+#     if request.method == "POST":
+#         ticket.delete()
+#         return redirect("feed")
 
-    return render(request, "reviews/ticket_confirm_delete.html", {"ticket": ticket})
+#     return render(request, "reviews/ticket_confirm_delete.html", {"ticket": ticket})

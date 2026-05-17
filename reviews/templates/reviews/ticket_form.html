@@ -6,22 +6,42 @@
   Détails du ticket et formulaire de demande de critique.
 {% endblock description %}
 {% block content %}
-  <section class="container mx-auto max-md:py-8 min-h-[calc(100vh-128px)] flex flex-col gap-4 justify-center items-center p-16">
+  <section class="container mx-auto max-md:py-8 min-h-[calc(100vh-128px)] flex flex-col gap-4 justify-center items-center py-12">
     <div class="bg-white p-8 border-4 border-black shadow-[4px_4px_0_#000] w-full max-w-2xl">
-      <h1 class="text-4xl font-extrabold mb-8">Ticket</h1>
+      {% if form.instance.title %}<h1 class="text-4xl font-extrabold mb-8">Modifier le Ticket</h1>{% endif %}
+      {% if not form.instance.title %}<h1 class="text-4xl font-extrabold mb-8">Créer un Ticket</h1>{% endif %}
       <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="mb-6">
-          <label for="{{ form.title.id_for_label }}" class="block font-bold mb-2">Titre</label>
-          {{ form.title }}
+          <label for="{{ form.title.id_for_label }}" class="sr-only">Titre</label>
+          <input type="text"
+                 name="{{ form.title.name }}"
+                 id="{{ form.title.id_for_label }}"
+                 placeholder="Titre"
+                 value="{{ form.title.value|default:'' }}"
+                 class="w-full bg-white text-black px-3 py-3 border-2 border-black h-12">
+          {% if form.title.errors %}<p class="text-sm font-bold mt-1">{{ form.title.errors.0 }}</p>{% endif %}
         </div>
         <div class="mb-6">
-          <label for="{{ form.description.id_for_label }}" class="block font-bold mb-2">Description</label>
-          {{ form.description }}
+          <label for="{{ form.description.id_for_label }}" class="sr-only">Description</label>
+          <textarea name="{{ form.description.name }}"
+                    id="{{ form.description.id_for_label }}"
+                    placeholder="Description"
+                    rows="5"
+                    class="w-full bg-white text-black px-3 py-3 border-2 border-black min-h-32 resize-none">{{ form.description.value|default:'' }}</textarea>
+          {% if form.description.errors %}<p class="text-sm font-bold mt-1">{{ form.description.errors.0 }}</p>{% endif %}
         </div>
         <div class="mb-8">
-          <label for="{{ form.image.id_for_label }}" class="block font-bold mb-2">Image</label>
-          {{ form.image }}
+          <label for="{{ form.image.id_for_label }}" class="sr-only">Image</label>
+          {% if form.instance.image %}
+            <img src="{{ form.instance.image.url }}"
+                 alt="Image du ticket"
+                 class="mb-3 w-1/2 aspect-square object-contain">
+          {% endif %}
+          <input type="file"
+                 name="{{ form.image.name }}"
+                 id="{{ form.image.id_for_label }}">
+          {% if form.image.errors %}<p class="text-sm font-bold mt-1">{{ form.image.errors.0 }}</p>{% endif %}
         </div>
         <button type="submit"
                 class="w-full bg-black text-white text-sm font-bold uppercase px-6 py-3 border-4 border-black shadow-[4px_4px_0_#000] hover:scale-105 transition-transform duration-300">

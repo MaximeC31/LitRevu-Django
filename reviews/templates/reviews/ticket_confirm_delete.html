@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% comment %} {% extends "base.html" %}
 {% block title %}
   LITRevu - Supprimer ticket
 {% endblock title %}
@@ -12,11 +12,10 @@
       <p class="mb-8">Confirmer la suppression de « {{ ticket.title }} » ?</p>
       <form method="post">
         {% csrf_token %}
-        <button type="submit"
-                class="w-full bg-black text-white text-sm font-bold uppercase px-6 py-3 border-4 border-black shadow-[4px_4px_0_#000] hover:scale-105 transition-transform duration-300">
+        <button type="submit" class="w-full bg-black text-white text-sm font-bold uppercase px-6 py-3 border-4 border-black shadow-[4px_4px_0_#000] hover:scale-105 transition-transform duration-300">
           Supprimer
         </button>
       </form>
     </div>
   </section>
-{% endblock content %}
+{% endblock content % {% endcomment %}

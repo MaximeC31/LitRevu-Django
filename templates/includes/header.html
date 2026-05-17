@@ -3,7 +3,7 @@
       class="text-xl font-bold transition-transform duration-300 hover:scale-105">LITReview</a>
    <nav class="flex items-center gap-6 max-md:gap-3 max-md:flex-wrap max-md:justify-end">
       {% if user.is_authenticated %}
-         <a href="#"
+         <a href="{% url 'feed' %}"
             class="font-semibold transition-transform duration-300 hover:scale-105">Flux</a>
          <a href="#"
             class="font-semibold transition-transform duration-300 hover:scale-105">Posts</a>
