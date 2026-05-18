@@ -10,4 +10,7 @@ urlpatterns = [
     path("", home_view, name="home"),
     path("", include("authentication.urls")),
     path("", include("reviews.urls")),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
+
+if settings.DEBUG:
+    urlpatterns.extend(static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT))

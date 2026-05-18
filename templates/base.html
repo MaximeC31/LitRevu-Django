@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
       {% block title %}
-        LitReviews - Découvrez les avis sur vos livres préférés
+        LITRevu | Critiques de livres et avis de lecture
       {% endblock title %}
     </title>
     <meta name="description"
           content="{% block description %}
-                     Découvrez les avis sur vos livres préférés et partagez vos propres critiques avec la communauté.
+                     Lisez, publiez et gérez vos critiques de livres sur LITRevu, la communauté dédiée aux lecteurs.
                    {% endblock description %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,9 +18,9 @@
           rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <body class="font-['Inter',system-ui,sans-serif] leading-none bg-white antialiased">
+  <body class="min-h-screen bg-white font-['Inter',system-ui,sans-serif] leading-normal text-black antialiased">
     {% include "includes/header.html" %}
-    <main>
+    <main class="flex-1">
       {% block content %}
       {% endblock content %}
     </main>

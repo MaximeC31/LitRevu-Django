@@ -117,9 +117,13 @@ AUTH_USER_MODEL = "authentication.User"
 
 STATIC_URL = "static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
+
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 LOGIN_URL = "/connexion/"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/connexion/"
+
+FLUX = "/fil/"
+POSTS = "/posts/"

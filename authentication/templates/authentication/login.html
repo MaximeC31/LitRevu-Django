@@ -1,17 +1,17 @@
 {% extends "base.html" %}
 {% block title %}
-    LITRevu - Connexion
+    LITRevu | Connexion
 {% endblock title %}
 {% block description %}
-    Connectez-vous à LITRevu pour partager vos critiques de livres et découvrir de nouvelles lectures.
+    Connectez-vous pour accéder à vos critiques, publier de nouveaux avis et découvrir votre prochaine lecture.
 {% endblock description %}
 {% block content %}
-    <section class="container mx-auto max-md:py-8 min-h-[calc(100vh-128px)] flex flex-col gap-4 justify-center items-center">
-        <div class="bg-white p-8 border-4 border-black shadow-[4px_4px_0_#000] w-full max-w-xl">
-            <h1 class="text-4xl font-extrabold mb-8">Connexion</h1>
+    <section class="container mx-auto flex min-h-[calc(100vh-128px)] flex-col items-center justify-center px-6 py-12">
+        <div class="w-full max-w-xl border-4 border-black bg-white p-8 shadow-[4px_4px_0_#000]">
+            <h1 class="mb-8 text-4xl font-extrabold tracking-tight">Connexion</h1>
             <form method="post">
                 {% csrf_token %}
-                {% if form.non_field_errors %}<p class="text-sm font-bold mb-4">{{ form.non_field_errors.0 }}</p>{% endif %}
+                {% if form.non_field_errors %}<p class="mb-4 text-sm font-bold">{{ form.non_field_errors.0 }}</p>{% endif %}
                 <div class="mb-6">
                     <label for="{{ form.username.id_for_label }}" class="sr-only">Nom d'utilisateur</label>
                     <input type="text"
@@ -19,8 +19,8 @@
                            id="{{ form.username.id_for_label }}"
                            placeholder="Nom d'utilisateur"
                            value="{{ form.username.value|default:'' }}"
-                           class="w-full bg-white text-black px-3 py-3 border-2 border-black h-12">
-                    {% if form.username.errors %}<p class="text-sm font-bold mt-1">{{ form.username.errors.0 }}</p>{% endif %}
+                           class="h-12 w-full border-2 border-black bg-white px-3 py-3 text-black focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-black">
+                    {% if form.username.errors %}<p class="mt-1 text-sm font-bold">{{ form.username.errors.0 }}</p>{% endif %}
                 </div>
                 <div class="mb-8">
                     <label for="{{ form.password.id_for_label }}" class="sr-only">Mot de passe</label>
@@ -28,18 +28,18 @@
                            name="{{ form.password.name }}"
                            id="{{ form.password.id_for_label }}"
                            placeholder="Mot de passe"
-                           class="w-full bg-white text-black px-3 py-3 border-2 border-black h-12">
-                    {% if form.password.errors %}<p class="text-sm font-bold mt-1">{{ form.password.errors.0 }}</p>{% endif %}
+                           class="h-12 w-full border-2 border-black bg-white px-3 py-3 text-black focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-black">
+                    {% if form.password.errors %}<p class="mt-1 text-sm font-bold">{{ form.password.errors.0 }}</p>{% endif %}
                 </div>
                 <button type="submit"
-                        class="w-full bg-black text-white text-sm font-bold uppercase px-6 py-3 border-4 border-black shadow-[4px_4px_0_#000] hover:scale-105 transition-transform duration-300">
+                        class="inline-flex h-12 w-full items-center justify-center border-4 border-black bg-black px-6 py-3 text-sm font-bold uppercase text-white shadow-[4px_4px_0_#000] transition-transform duration-300 hover:scale-105 focus-visible:scale-105">
                     Se connecter
                 </button>
             </form>
             <div class="mt-8 text-center">
                 <p>Pas encore de compte ?</p>
                 <a href="{% url 'signup' %}"
-                   class="font-semibold underline mt-2 inline-block">S'inscrire</a>
+                   class="inline-block font-semibold underline underline-offset-4">S'inscrire</a>
             </div>
         </div>
     </section>
