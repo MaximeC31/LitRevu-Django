@@ -8,11 +8,9 @@
 {% block content %}
   <section class="container mx-auto flex min-h-[calc(100vh-128px)] flex-col gap-8 px-6 py-12">
     <div class="flex flex-wrap items-end justify-between gap-4">
-      <div class="space-y-2">
-        <h1 class="text-4xl font-extrabold tracking-tight">Vos posts</h1>
-      </div>
+      <h1 class="text-4xl font-extrabold tracking-tight">Vos posts</h1>
       <a href="{% url 'ticket_create' %}"
-         class="inline-flex items-center justify-center border-4 border-black bg-black px-6 py-3 text-sm font-bold uppercase text-white shadow-[4px_4px_0_#000] transition-transform duration-300 hover:scale-105 focus-visible:scale-105">Créer un ticket</a>
+         class="inline-flex items-center justify-center border-4 border-black bg-black px-6 py-3 text-sm font-bold uppercase text-white shadow-[4px_4px_0_#000] transition-transform duration-300 hover:scale-105">Créer un ticket</a>
     </div>
     <div class="flex flex-col gap-6">
       {% if not posts %}
@@ -26,8 +24,8 @@
           <article class="border-4 border-black bg-white p-6 shadow-[4px_4px_0_#000]">
             <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
               <div class="flex items-center gap-3 text-sm">
-                <span class="bg-black px-8 py-2 font-bold text-white">TICKET</span>
-                <span>par moi</span>
+                <p class="bg-black px-8 py-2 font-bold text-white">{{ post.kind|capfirst }}</p>
+                <span>par {{ post.author }}</span>
               </div>
               <time class="text-xs uppercase tracking-wide text-gray-500"
                     datetime="{{ post.time_created|date:'c' }}">{{ post.time_created|date:"d F Y à H:i" }}</time>
@@ -42,13 +40,13 @@
                      alt="Image du ticket {{ post.ticket.title }}"
                      class="w-full max-w-sm border-2 border-black object-cover">
               {% endif %}
-              <div class="flex flex-wrap gap-3">
+              <div class="flex gap-4">
                 <a href="{% url 'ticket_edit' post.ticket.id %}"
-                   class="inline-flex items-center justify-center border-2 border-black bg-white px-6 py-3 text-sm font-bold uppercase text-black shadow-[2px_2px_0_#000] transition-transform duration-300 hover:scale-105 focus-visible:scale-105">Modifier</a>
+                   class="inline-flex items-center justify-center border-2 border-black bg-white px-6 py-3 text-sm font-bold uppercase text-black shadow-[2px_2px_0_#000] transition-transform duration-300 hover:scale-105">Modifier</a>
                 <form method="post" action="{% url 'ticket_delete' post.ticket.id %}">
                   {% csrf_token %}
                   <button type="submit"
-                          class="inline-flex items-center justify-center border-2 border-black bg-white px-6 py-3 text-sm font-bold uppercase text-black shadow-[2px_2px_0_#000] transition-transform duration-300 hover:scale-105 focus-visible:scale-105">
+                          class="inline-flex items-center justify-center border-2 border-black bg-white px-6 py-3 text-sm font-bold uppercase text-black shadow-[2px_2px_0_#000] transition-transform duration-300 hover:scale-105">
                     Supprimer
                   </button>
                 </form>

@@ -35,6 +35,7 @@ def posts_list(request):
             {
                 "kind": "ticket",
                 "ticket": ticket,
+                "author": ticket.user.username,
                 "title": ticket.title,
                 "description": ticket.description,
                 "image": ticket.image,
@@ -57,11 +58,13 @@ def ticket_edit(request, ticket_id):
         return redirect(settings.POSTS)
 
     form = TicketForm(instance=ticket)
-
     if request.method == "POST":
+        old_image = ticket.image
         form = TicketForm(request.POST, request.FILES, instance=ticket)
         if form.is_valid():
-            form.save()
+            ticket = form.save()
+            if form.cleaned_data.get("image") and old_image:
+                old_image.delete(save=False)
             return redirect(settings.POSTS)
 
     return render(request, "reviews/ticket_form.html", {"form": form})

@@ -21,7 +21,7 @@
                  id="{{ form.title.id_for_label }}"
                  placeholder="Titre"
                  value="{{ form.title.value|default:'' }}"
-                 class="h-12 w-full border-2 border-black bg-white px-3 py-3 text-black focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-black">
+                 class="h-12 w-full border-2 border-black bg-white px-3 py-3 text-black">
           {% if form.title.errors %}<p class="mt-1 text-sm font-bold">{{ form.title.errors.0 }}</p>{% endif %}
         </div>
         <div class="mb-6">
@@ -30,7 +30,7 @@
                     id="{{ form.description.id_for_label }}"
                     placeholder="Description"
                     rows="5"
-                    class="min-h-32 w-full resize-none border-2 border-black bg-white px-3 py-3 text-black focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-black">{{ form.description.value|default:'' }}</textarea>
+                    class="min-h-32 w-full resize-none border-2 border-black bg-white px-3 py-3 text-black">{{ form.description.value|default:'' }}</textarea>
           {% if form.description.errors %}<p class="mt-1 text-sm font-bold">{{ form.description.errors.0 }}</p>{% endif %}
         </div>
         <div class="mb-8">
@@ -47,7 +47,7 @@
           {% if form.image.errors %}<p class="mt-1 text-sm font-bold">{{ form.image.errors.0 }}</p>{% endif %}
         </div>
         <button type="submit"
-                class="inline-flex h-12 w-full items-center justify-center border-4 border-black bg-black px-6 py-3 text-sm font-bold uppercase text-white shadow-[4px_4px_0_#000] transition-transform duration-300 hover:scale-105 focus-visible:scale-105">
+                class="inline-flex h-12 w-full items-center justify-center border-4 border-black bg-black px-6 py-3 text-sm font-bold uppercase text-white shadow-[4px_4px_0_#000] transition-transform duration-300 hover:scale-105">
           Enregistrer
         </button>
       </form>
