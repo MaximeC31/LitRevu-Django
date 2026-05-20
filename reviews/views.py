@@ -2,7 +2,14 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Ticket
 from .forms import TicketForm
-from django.conf import settings
+from django.views.decorators.http import require_http_methods
+
+
+def home_view(request):
+    if request.user.is_authenticated:
+        return redirect("reviews:feed")
+
+    return render(request, "home.html")
 
 
 @login_required
@@ -20,7 +27,7 @@ def ticket_create(request):
             ticket = form.instance
             ticket.user = request.user
             ticket.save()
-            return redirect(settings.POSTS)
+            return redirect("reviews:posts_list")
 
     return render(request, "reviews/ticket_form.html", {"form": form})
 
@@ -50,14 +57,12 @@ def posts_list(request):
 @login_required
 def ticket_edit(request, ticket_id):
     try:
-        ticket = Ticket.objects.get(id=ticket_id)
+        ticket = Ticket.objects.get(id=ticket_id, user=request.user)
     except Ticket.DoesNotExist:
-        return redirect(settings.POSTS)
-
-    if ticket.user != request.user:
-        return redirect(settings.POSTS)
+        return redirect("reviews:posts_list")
 
     form = TicketForm(instance=ticket)
+
     if request.method == "POST":
         old_image = ticket.image
         form = TicketForm(request.POST, request.FILES, instance=ticket)
@@ -65,24 +70,21 @@ def ticket_edit(request, ticket_id):
             ticket = form.save()
             if form.cleaned_data.get("image") and old_image:
                 old_image.delete(save=False)
-            return redirect(settings.POSTS)
+            return redirect("reviews:posts_list")
 
     return render(request, "reviews/ticket_form.html", {"form": form})
 
 
 @login_required
-def ticket_delete(request, ticket_id):
+@require_http_methods(["POST"])
+def ticket_delete(request):
     try:
-        ticket = Ticket.objects.get(id=ticket_id)
+        ticket = Ticket.objects.get(id=request.POST.get("ticket_id"), user=request.user)
     except Ticket.DoesNotExist:
-        return redirect(settings.POSTS)
+        return redirect("reviews:posts_list")
 
-    if ticket.user != request.user:
-        return redirect(settings.POSTS)
+    if ticket.image:
+        ticket.image.delete(save=False)
+    ticket.delete()
 
-    if request.method == "POST":
-        if ticket.image:
-            ticket.image.delete(save=False)
-        ticket.delete()
-
-    return redirect(settings.POSTS)
+    return redirect("reviews:posts_list")
