@@ -12,9 +12,9 @@
       Les critiques de livres et d'articles, par une communauté de confiance.
     </p>
     <div class="flex flex-wrap gap-4 pt-2">
-      <a href="{% url 'login' %}"
+      <a href="{% url 'authentication:login' %}"
          class="inline-flex items-center justify-center border-4 border-black bg-black px-6 py-3 text-sm font-bold uppercase text-white shadow-[4px_4px_0_#000] transition-transform duration-300 hover:scale-105 focus-visible:scale-105">Connexion</a>
-      <a href="{% url 'signup' %}"
+      <a href="{% url 'authentication:signup' %}"
          class="inline-flex items-center justify-center border-4 border-black bg-white px-6 py-3 text-sm font-bold uppercase text-black shadow-[4px_4px_0_#000] transition-transform duration-300 hover:scale-105 focus-visible:scale-105">S'inscrire</a>
     </div>
   </section>

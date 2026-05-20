@@ -1,22 +1,22 @@
 <header class="sticky top-0 z-40 flex h-16 items-center justify-between border-b-4 border-black bg-white px-6">
-    <a href="{% url 'home' %}"
-       class="text-xl font-bold transition-transform duration-300 hover:scale-105 focus-visible:scale-105">LITRevu</a>
-    <nav class="flex items-center gap-4 md:gap-6">
-        {% if user.is_authenticated %}
-            <a href="{% url 'feed' %}"
-               class="font-semibold transition-transform duration-300 hover:scale-105 focus-visible:scale-105">Flux</a>
-            <a href="{% url 'posts_list' %}"
-               class="font-semibold transition-transform duration-300 hover:scale-105 focus-visible:scale-105">Posts</a>
-            <a href="#"
-               class="font-semibold transition-transform duration-300 hover:scale-105 focus-visible:scale-105">Abonnements</a>
-            <a href="{% url 'logout' %}"
-               class="font-semibold transition-transform duration-300 hover:scale-105 focus-visible:scale-105">Déconnexion</a>
-        {% endif %}
-        {% if not user.is_authenticated %}
-            <a href="{% url 'login' %}"
-               class="font-semibold transition-transform duration-300 hover:scale-105 focus-visible:scale-105">Connexion</a>
-            <a href="{% url 'signup' %}"
-               class="font-semibold transition-transform duration-300 hover:scale-105 focus-visible:scale-105">S'inscrire</a>
-        {% endif %}
-    </nav>
+   <a href="{% url 'reviews:home' %}"
+      class="text-xl font-bold transition-transform duration-300 hover:scale-105 focus-visible:scale-105">LITRevu</a>
+   <nav class="flex items-center gap-4 md:gap-6">
+      {% if user.is_authenticated %}
+         <a href="{% url 'reviews:feed' %}"
+            class="font-semibold transition-transform duration-300 hover:scale-105 focus-visible:scale-105">Flux</a>
+         <a href="{% url 'reviews:posts_list' %}"
+            class="font-semibold transition-transform duration-300 hover:scale-105 focus-visible:scale-105">Posts</a>
+         <a href="#"
+            class="font-semibold transition-transform duration-300 hover:scale-105 focus-visible:scale-105">Abonnements</a>
+         <a href="{% url 'authentication:logout' %}"
+            class="font-semibold transition-transform duration-300 hover:scale-105 focus-visible:scale-105">Déconnexion</a>
+      {% endif %}
+      {% if not user.is_authenticated %}
+         <a href="{% url 'authentication:login' %}"
+            class="font-semibold transition-transform duration-300 hover:scale-105 focus-visible:scale-105">Connexion</a>
+         <a href="{% url 'authentication:signup' %}"
+            class="font-semibold transition-transform duration-300 hover:scale-105 focus-visible:scale-105">S'inscrire</a>
+      {% endif %}
+   </nav>
 </header>
