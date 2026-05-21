@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Ticket
-from .forms import TicketForm
+from .models import Ticket, Review
+from .forms import TicketForm, ReviewForm
 from django.views.decorators.http import require_http_methods
 
 
@@ -88,3 +88,34 @@ def ticket_delete(request):
     ticket.delete()
 
     return redirect("reviews:posts_list")
+
+
+@login_required
+def reviews_create_response(request, ticket_id):
+    try:
+        ticket = Ticket.objects.get(id=ticket_id)
+    except Ticket.DoesNotExist:
+        return redirect("reviews:feed")
+
+    if Review.objects.filter(ticket=ticket, user=request.user).exists():
+        return redirect("reviews:feed")
+
+    form = ReviewForm()
+
+    if request.method == "POST":
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.instance
+            review.ticket = ticket
+            review.user = request.user
+            review.save()
+            return redirect("reviews:feed")
+
+    return render(
+        request,
+        "reviews/review_create_response.html",
+        {
+            "ticket": ticket,
+            "form": form,
+        },
+    )
