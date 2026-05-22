@@ -91,19 +91,17 @@ def ticket_delete(request):
 
 
 @login_required
-def reviews_create_response(request, ticket_id):
+def reviews_edit_response(request, ticket_id):
     try:
         ticket = Ticket.objects.get(id=ticket_id)
     except Ticket.DoesNotExist:
         return redirect("reviews:feed")
 
-    if Review.objects.filter(ticket=ticket, user=request.user).exists():
-        return redirect("reviews:feed")
-
-    form = ReviewForm()
+    existing_review = Review.objects.filter(ticket=ticket, user=request.user).first()
+    form = ReviewForm(instance=existing_review)
 
     if request.method == "POST":
-        form = ReviewForm(request.POST)
+        form = ReviewForm(request.POST, instance=existing_review)
         if form.is_valid():
             review = form.instance
             review.ticket = ticket

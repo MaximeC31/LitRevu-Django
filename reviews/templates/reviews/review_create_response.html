@@ -8,7 +8,13 @@
 {% block content %}
   <section class="container mx-auto flex min-h-[calc(100vh-128px)] flex-col items-center justify-center px-6 py-12">
     <div class="w-full max-w-4xl">
-      <h1 class="mb-8 text-4xl font-extrabold">Créer une critique</h1>
+      <h1 class="mb-8 text-4xl font-extrabold">
+        {% if form.instance.pk %}
+          Modifier votre critique
+        {% else %}
+          Créer une critique
+        {% endif %}
+      </h1>
       <p class="mb-4 text-lg font-bold">Vous postez une réponse à :</p>
       <article class="mb-8 border-2 border-black bg-gray-200 p-4 opacity-85">
         <div class="mb-3 flex flex-wrap items-center justify-between gap-3">
@@ -49,6 +55,7 @@
                   <input type="radio"
                          name="{{ form.rating.name }}"
                          value="{{ i }}"
+                         {% if form.rating.value|stringformat:"s" == i %}checked{% endif %}
                          class="sr-only peer">
                   <span class="flex h-8 w-8 items-center justify-center rounded-full border-2 border-black bg-white text-sm font-bold transition-colors peer-checked:bg-black peer-checked:text-white">
                     {{ i }}
@@ -72,7 +79,11 @@
           <div class="flex justify-end">
             <button type="submit"
                     class="inline-flex items-center justify-center border-4 border-black bg-black px-6 py-3 text-sm font-bold uppercase text-white shadow-[4px_4px_0_#000] transition-transform duration-300 hover:scale-105">
-              Envoyer
+              {% if form.instance.pk %}
+                Mettre à jour
+              {% else %}
+                Enregistrer
+              {% endif %}
             </button>
           </div>
         </form>
