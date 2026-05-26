@@ -15,13 +15,10 @@
           Créer une critique
         {% endif %}
       </h1>
-      <p class="mb-4 text-lg font-bold">Vous postez une réponse à :</p>
+      <p class="mb-4 text-lg font-bold">Vous postez en réponse à :</p>
       <article class="mb-8 border-2 border-black bg-gray-200 p-4 opacity-85">
         <div class="mb-3 flex flex-wrap items-center justify-between gap-3">
-          <p>
-            <span class="bg-black px-3 py-1 text-xs font-bold uppercase text-white">Ticket</span>
-            <span class="text-sm text-gray-700">{{ ticket.user.username }} a demandé une critique</span>
-          </p>
+          <p class="text-sm text-gray-700">{{ ticket.user.username }} a demandé une critique</p>
           <time class="text-xs uppercase tracking-wide text-gray-500"
                 datetime="{{ ticket.time_created|date:'c' }}">{{ ticket.time_created|date:"d F Y à H:i" }}</time>
         </div>

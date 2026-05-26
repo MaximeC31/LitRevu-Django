@@ -34,10 +34,24 @@ def ticket_create(request):
 
 @login_required
 def posts_list(request):
-    tickets = Ticket.objects.filter(user=request.user)
-
+    tickets = Ticket.objects.filter(user=request.user).order_by("-time_created")
     posts = []
     for ticket in tickets:
+        ticket_reviews = Review.objects.filter(ticket=ticket).order_by("-time_created")
+        reviews_on_ticket = []
+        for review in ticket_reviews:
+            reviews_on_ticket.append(
+                {
+                    "kind": "review",
+                    "review": review,
+                    "author": review.user.username,
+                    "title": review.headline,
+                    "description": review.body,
+                    "rating": review.rating,
+                    "ticket": review.ticket,
+                    "time_created": review.time_created,
+                }
+            )
         posts.append(
             {
                 "kind": "ticket",
@@ -47,8 +61,28 @@ def posts_list(request):
                 "description": ticket.description,
                 "image": ticket.image,
                 "time_created": ticket.time_created,
+                "reviews": reviews_on_ticket,
             }
         )
+
+    reviews = Review.objects.filter(user=request.user).order_by("-time_created")
+    for review in reviews:
+        if review.ticket.user == request.user:
+            continue
+
+        posts.append(
+            {
+                "kind": "review",
+                "review": review,
+                "author": review.user.username,
+                "title": review.headline,
+                "description": review.body,
+                "rating": review.rating,
+                "ticket": review.ticket,
+                "time_created": review.time_created,
+            }
+        )
+
     posts.sort(key=lambda post: post["time_created"], reverse=True)
 
     return render(request, "reviews/posts_list.html", {"posts": posts})
