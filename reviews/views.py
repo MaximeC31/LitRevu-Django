@@ -151,3 +151,17 @@ def reviews_edit_response(request, ticket_id):
             "form": form,
         },
     )
+
+
+@login_required
+@require_http_methods(["POST"])
+def review_delete(request):
+    review_id = request.POST.get("review_id")
+
+    try:
+        review = Review.objects.get(id=review_id, user=request.user)
+    except Review.DoesNotExist:
+        return redirect("reviews:posts_list")
+
+    review.delete()
+    return redirect("reviews:posts_list")

@@ -12,4 +12,5 @@ urlpatterns = [
     path("tickets/update/<int:ticket_id>/", views.ticket_edit, name="ticket_edit"),
     path("tickets/delete/", views.ticket_delete, name="ticket_delete"),
     path("tickets/<int:ticket_id>/respond/", views.reviews_edit_response, name="reviews_edit_response"),
+    path("reviews/delete/", views.review_delete, name="review_delete"),
 ]
