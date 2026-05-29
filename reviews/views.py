@@ -5,7 +5,7 @@ from .forms import TicketForm, ReviewForm
 from django.views.decorators.http import require_http_methods
 
 
-def home_view(request):
+def home(request):
     if request.user.is_authenticated:
         return redirect("reviews:feed")
 
@@ -35,57 +35,8 @@ def ticket_create(request):
 @login_required
 def posts_list(request):
     tickets = Ticket.objects.filter(user=request.user).order_by("-time_created")
-    posts = []
-    for ticket in tickets:
-        ticket_reviews = Review.objects.filter(ticket=ticket).order_by("-time_created")
-        reviews_on_ticket = []
-        for review in ticket_reviews:
-            reviews_on_ticket.append(
-                {
-                    "kind": "review",
-                    "review": review,
-                    "author": review.user.username,
-                    "title": review.headline,
-                    "description": review.body,
-                    "rating": review.rating,
-                    "ticket": review.ticket,
-                    "time_created": review.time_created,
-                }
-            )
-        posts.append(
-            {
-                "kind": "ticket",
-                "ticket": ticket,
-                "author": ticket.user.username,
-                "title": ticket.title,
-                "description": ticket.description,
-                "image": ticket.image,
-                "time_created": ticket.time_created,
-                "reviews": reviews_on_ticket,
-            }
-        )
-
     reviews = Review.objects.filter(user=request.user).order_by("-time_created")
-    for review in reviews:
-        if review.ticket.user == request.user:
-            continue
-
-        posts.append(
-            {
-                "kind": "review",
-                "review": review,
-                "author": review.user.username,
-                "title": review.headline,
-                "description": review.body,
-                "rating": review.rating,
-                "ticket": review.ticket,
-                "time_created": review.time_created,
-            }
-        )
-
-    posts.sort(key=lambda post: post["time_created"], reverse=True)
-
-    return render(request, "reviews/posts_list.html", {"posts": posts})
+    return render(request, "reviews/posts_list.html", locals())
 
 
 @login_required
@@ -111,9 +62,9 @@ def ticket_edit(request, ticket_id):
 
 @login_required
 @require_http_methods(["POST"])
-def ticket_delete(request):
+def ticket_delete(request, ticket_id):
     try:
-        ticket = Ticket.objects.get(id=request.POST.get("ticket_id"), user=request.user)
+        ticket = Ticket.objects.get(id=ticket_id, user=request.user)
     except Ticket.DoesNotExist:
         return redirect("reviews:posts_list")
 
@@ -125,7 +76,7 @@ def ticket_delete(request):
 
 
 @login_required
-def reviews_edit_response(request, ticket_id):
+def reviews_add_edit(request, ticket_id):
     try:
         ticket = Ticket.objects.get(id=ticket_id)
     except Ticket.DoesNotExist:
@@ -155,9 +106,7 @@ def reviews_edit_response(request, ticket_id):
 
 @login_required
 @require_http_methods(["POST"])
-def review_delete(request):
-    review_id = request.POST.get("review_id")
-
+def review_delete(request, review_id):
     try:
         review = Review.objects.get(id=review_id, user=request.user)
     except Review.DoesNotExist:

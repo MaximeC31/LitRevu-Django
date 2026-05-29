@@ -9,21 +9,18 @@
   <section class="container mx-auto flex min-h-[calc(100vh-128px)] flex-col items-center justify-center px-6 py-12">
     <div class="w-full max-w-4xl">
       <h1 class="mb-8 text-4xl font-extrabold">
-        {% if form.instance.pk %}
-          Modifier votre critique
-        {% else %}
-          Créer une critique
-        {% endif %}
+        {% if form.instance.pk %}Modifier votre critique{% endif %}
+        {% if not form.instance.pk %}Créer une critique{% endif %}
       </h1>
       <p class="mb-4 text-lg font-bold">Vous postez en réponse à :</p>
       <article class="mb-8 border-2 border-black bg-gray-200 p-4 opacity-85">
         <div class="mb-3 flex flex-wrap items-center justify-between gap-3">
           <p class="text-sm text-gray-700">{{ ticket.user.username }} a demandé une critique</p>
-          <time class="text-xs uppercase tracking-wide text-gray-500"
+          <time class="text-xs uppercase text-gray-500"
                 datetime="{{ ticket.time_created|date:'c' }}">{{ ticket.time_created|date:"d F Y à H:i" }}</time>
         </div>
         <h2 class="mb-2 text-xl font-bold">{{ ticket.title }}</h2>
-        <p class="whitespace-pre-line text-base leading-7 text-gray-700">{{ ticket.description }}</p>
+        <p class="text-base text-gray-700">{{ ticket.description }}</p>
         {% if ticket.image %}
           <img src="{{ ticket.image.url }}"
                alt="Image du ticket {{ ticket.title }}"
@@ -45,7 +42,7 @@
             {% if form.headline.errors %}<p class="mt-1 text-sm font-bold">{{ form.headline.errors.0 }}</p>{% endif %}
           </div>
           <div class="mb-4">
-            <label class="mb-1 block text-sm font-semibold">Note</label>
+            <label class="mb-2 block text-sm font-semibold">Note</label>
             <div class="flex gap-4">
               {% for i in "012345" %}
                 <label class="flex cursor-pointer items-center gap-1">
@@ -76,11 +73,8 @@
           <div class="flex justify-end">
             <button type="submit"
                     class="inline-flex items-center justify-center border-4 border-black bg-black px-6 py-3 text-sm font-bold uppercase text-white shadow-[4px_4px_0_#000] transition-transform duration-300 hover:scale-105">
-              {% if form.instance.pk %}
-                Mettre à jour
-              {% else %}
-                Enregistrer
-              {% endif %}
+              {% if form.instance.pk %}Mettre à jour{% endif %}
+              {% if not form.instance.pk %}Enregistrer{% endif %}
             </button>
           </div>
         </form>

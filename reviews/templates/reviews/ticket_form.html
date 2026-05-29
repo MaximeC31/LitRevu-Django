@@ -8,7 +8,7 @@
 {% block content %}
   <section class="container mx-auto flex min-h-[calc(100vh-128px)] flex-col items-center justify-center px-6 py-12">
     <div class="w-full max-w-2xl border-4 border-black bg-white p-8 shadow-[4px_4px_0_#000]">
-      <h1 class="mb-8 text-4xl font-extrabold tracking-tight">
+      <h1 class="mb-8 text-4xl font-extrabold">
         {% if form.instance.title %}Modifier le Ticket{% endif %}
         {% if not form.instance.title %}Créer un Ticket{% endif %}
       </h1>

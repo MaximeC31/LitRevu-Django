@@ -8,7 +8,7 @@
 {% block content %}
     <section class="container mx-auto flex min-h-[calc(100vh-128px)] flex-col items-center justify-center px-6 py-12">
         <div class="w-full max-w-xl border-4 border-black bg-white p-8 shadow-[4px_4px_0_#000]">
-            <h1 class="mb-8 text-4xl font-extrabold tracking-tight">Connexion</h1>
+            <h1 class="mb-8 text-4xl font-extrabold">Connexion</h1>
             <form method="post">
                 {% csrf_token %}
                 {% if form.non_field_errors %}<p class="mb-4 text-sm font-bold">{{ form.non_field_errors.0 }}</p>{% endif %}
@@ -19,7 +19,7 @@
                            id="{{ form.username.id_for_label }}"
                            placeholder="Nom d'utilisateur"
                            value="{{ form.username.value|default:'' }}"
-                           class="h-12 w-full border-2 border-black bg-white px-3 py-3 text-black focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-black">
+                           class="h-12 w-full border-2 border-black bg-white px-3 py-3 text-black">
                     {% if form.username.errors %}<p class="mt-1 text-sm font-bold">{{ form.username.errors.0 }}</p>{% endif %}
                 </div>
                 <div class="mb-8">
@@ -28,11 +28,11 @@
                            name="{{ form.password.name }}"
                            id="{{ form.password.id_for_label }}"
                            placeholder="Mot de passe"
-                           class="h-12 w-full border-2 border-black bg-white px-3 py-3 text-black focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-black">
+                           class="h-12 w-full border-2 border-black bg-white px-3 py-3 text-black">
                     {% if form.password.errors %}<p class="mt-1 text-sm font-bold">{{ form.password.errors.0 }}</p>{% endif %}
                 </div>
                 <button type="submit"
-                        class="inline-flex h-12 w-full items-center justify-center border-4 border-black bg-black px-6 py-3 text-sm font-bold uppercase text-white shadow-[4px_4px_0_#000] transition-transform duration-300 hover:scale-105 focus-visible:scale-105">
+                        class="inline-flex h-12 w-full items-center justify-center border-4 border-black bg-black px-6 py-3 text-sm font-bold uppercase text-white shadow-[4px_4px_0_#000] transition-transform duration-300 hover:scale-105">
                     Se connecter
                 </button>
             </form>
