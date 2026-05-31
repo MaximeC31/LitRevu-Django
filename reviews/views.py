@@ -76,6 +76,32 @@ def ticket_delete(request, ticket_id):
 
 
 @login_required
+def review_create(request):
+    ticket_form = TicketForm()
+    review_form = ReviewForm()
+
+    if request.method == "POST":
+        ticket_form = TicketForm(request.POST, request.FILES)
+        review_form = ReviewForm(request.POST)
+
+        if ticket_form.is_valid() and review_form.is_valid():
+            ticket = ticket_form.instance
+            ticket.user = request.user
+            ticket.save()
+
+            review = review_form.instance
+            review.ticket = ticket
+            review.user = request.user
+            review.save()
+
+            return redirect("reviews:feed")
+
+    return render(
+        request, "reviews/review_form.html", {"ticket_form": ticket_form, "review_form": review_form}
+    )
+
+
+@login_required
 def reviews_add_edit(request, ticket_id):
     try:
         ticket = Ticket.objects.get(id=ticket_id)

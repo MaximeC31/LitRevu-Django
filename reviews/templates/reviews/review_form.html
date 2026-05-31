@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block title %}
+  LITRevu | Créer une critique
+{% endblock title %}
+{% block description %}
+  Créez et publiez votre critique en une seule étape sur LITRevu.
+{% endblock description %}
+{% block content %}
+  <section class="container mx-auto flex min-h-[calc(100vh-128px)] flex-col px-6 py-12">
+    <div class="mx-auto flex w-full max-w-4xl flex-col gap-8">
+      <div class="flex flex-col gap-3">
+        <h1 class="text-4xl font-extrabold">Créer votre critique</h1>
+      </div>
+      <form method="post"
+            enctype="multipart/form-data"
+            class="flex flex-col gap-8">
+        {% csrf_token %}
+        {% if ticket_form.non_field_errors or review_form.non_field_errors %}
+          <article class="border-4 border-black bg-white p-4 shadow-[4px_4px_0_#000]">
+            {% for error in ticket_form.non_field_errors %}<p class="text-sm font-bold">{{ error }}</p>{% endfor %}
+            {% for error in review_form.non_field_errors %}<p class="text-sm font-bold">{{ error }}</p>{% endfor %}
+          </article>
+        {% endif %}
+        <div class="border-4 border-black bg-white p-8 shadow-[4px_4px_0_#000]">
+          <div class="mb-6 flex flex-col gap-2">
+            <p class="w-fit bg-black px-4 py-1 text-sm font-bold uppercase text-white">Ticket</p>
+            <h2 class="text-2xl font-bold">Votre demande</h2>
+          </div>
+          <div class="flex flex-col gap-6 border-black border-b-4 pb-8 mb-8">
+            <div>
+              <label for="{{ ticket_form.title.id_for_label }}"
+                     class="mb-2 block text-sm font-bold uppercase">Titre</label>
+              <input type="text"
+                     name="{{ ticket_form.title.name }}"
+                     id="{{ ticket_form.title.id_for_label }}"
+                     value="{{ ticket_form.title.value|default:'' }}"
+                     class="h-12 w-full border-2 border-black bg-white px-3 py-3 text-black">
+              {% if ticket_form.title.errors %}<p class="mt-1 text-sm font-bold">{{ ticket_form.title.errors.0 }}</p>{% endif %}
+            </div>
+            <div>
+              <label for="{{ ticket_form.description.id_for_label }}"
+                     class="mb-2 block text-sm font-bold uppercase">Description</label>
+              <textarea name="{{ ticket_form.description.name }}"
+                        id="{{ ticket_form.description.id_for_label }}"
+                        rows="5"
+                        class="min-h-32 w-full resize-none border-2 border-black bg-white px-3 py-3 text-black">{{ ticket_form.description.value|default:'' }}</textarea>
+              {% if ticket_form.description.errors %}
+                <p class="mt-1 text-sm font-bold">{{ ticket_form.description.errors.0 }}</p>
+              {% endif %}
+            </div>
+            <div>
+              <label for="{{ ticket_form.image.id_for_label }}"
+                     class="mb-2 block text-sm font-bold uppercase">Image</label>
+              {% if ticket_form.instance.image %}
+                <img src="{{ ticket_form.instance.image.url }}"
+                     alt="Image du ticket"
+                     class="mb-3 max-h-48 max-w-full border-2 border-black object-cover">
+              {% endif %}
+              <input type="file"
+                     name="{{ ticket_form.image.name }}"
+                     id="{{ ticket_form.image.id_for_label }}"
+                     class="block w-full text-sm text-gray-700">
+              {% if ticket_form.image.errors %}<p class="mt-1 text-sm font-bold">{{ ticket_form.image.errors.0 }}</p>{% endif %}
+            </div>
+          </div>
+          <div class="mb-6 flex flex-col gap-2">
+            <p class="w-fit bg-black px-4 py-1 text-sm font-bold uppercase text-white">Critique</p>
+            <h2 class="text-2xl font-bold">Votre avis</h2>
+          </div>
+          <div class="flex flex-col gap-6">
+            <div>
+              <label for="{{ review_form.headline.id_for_label }}"
+                     class="mb-2 block text-sm font-bold uppercase">Titre de la critique</label>
+              <input type="text"
+                     name="{{ review_form.headline.name }}"
+                     id="{{ review_form.headline.id_for_label }}"
+                     value="{{ review_form.headline.value|default:'' }}"
+                     class="h-12 w-full border-2 border-black bg-white px-3 py-3 text-black">
+              {% if review_form.headline.errors %}
+                <p class="mt-1 text-sm font-bold">{{ review_form.headline.errors.0 }}</p>
+              {% endif %}
+            </div>
+            <div>
+              <label class="mb-2 block text-sm font-bold uppercase">Note</label>
+              <div class="flex flex-wrap gap-3">
+                {% for i in "012345" %}
+                  <label class="flex cursor-pointer items-center gap-2">
+                    <input type="radio"
+                           name="{{ review_form.rating.name }}"
+                           value="{{ i }}"
+                           {% if review_form.rating.value|stringformat:"s" == i %}checked{% endif %}
+                           class="sr-only peer">
+                    <span class="flex h-10 w-10 items-center justify-center border-2 border-black bg-white text-sm font-bold transition-colors rounded-full peer-checked:bg-black peer-checked:text-white">
+                      {{ i }}
+                    </span>
+                  </label>
+                {% endfor %}
+              </div>
+              {% if review_form.rating.errors %}<p class="mt-1 text-sm font-bold">{{ review_form.rating.errors.0 }}</p>{% endif %}
+            </div>
+            <div>
+              <label for="{{ review_form.body.id_for_label }}"
+                     class="mb-2 block text-sm font-bold uppercase">Commentaire</label>
+              <textarea name="{{ review_form.body.name }}"
+                        id="{{ review_form.body.id_for_label }}"
+                        rows="6"
+                        class="min-h-32 w-full resize-none border-2 border-black bg-white px-3 py-3 text-black">{{ review_form.body.value|default:'' }}</textarea>
+              {% if review_form.body.errors %}<p class="mt-1 text-sm font-bold">{{ review_form.body.errors.0 }}</p>{% endif %}
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-end">
+          <button type="submit"
+                  class="inline-flex h-12 items-center justify-center border-4 border-black bg-black px-6 py-3 text-sm font-bold uppercase text-white shadow-[4px_4px_0_#000] transition-transform duration-300 hover:scale-105">
+            Enregistrer
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+{% endblock content %}
