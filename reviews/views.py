@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Ticket, Review
 from .forms import TicketForm, ReviewForm
 from django.views.decorators.http import require_http_methods
+import django.db.models as models
 
 
 def home(request):
@@ -10,11 +11,6 @@ def home(request):
         return redirect("reviews:feed")
 
     return render(request, "home.html")
-
-
-@login_required
-def feed(request):
-    return render(request, "reviews/feed.html")
 
 
 @login_required
@@ -140,3 +136,34 @@ def review_delete(request, review_id):
 
     review.delete()
     return redirect("reviews:posts_list")
+
+
+@login_required
+def feed(request):
+    followed_user_ids = request.user.following.values_list("followed_user_id", flat=True)
+
+    user_tickets = Ticket.objects.filter(user=request.user)
+    followed_tickets = Ticket.objects.filter(user_id__in=followed_user_ids)
+    visible_tickets = user_tickets | followed_tickets
+
+    user_reviews = Review.objects.filter(user=request.user)
+    followed_reviews = Review.objects.filter(user_id__in=followed_user_ids)
+    ticket_reviews = Review.objects.filter(ticket__user=request.user)
+    visible_reviews = user_reviews | followed_reviews | ticket_reviews
+
+    visible_tickets = visible_tickets.annotate(
+        content_type=models.Value("TICKET", output_field=models.CharField())
+    )
+    visible_reviews = visible_reviews.annotate(
+        content_type=models.Value("REVIEW", output_field=models.CharField())
+    )
+
+    reviewed_ticket_ids = list(Review.objects.filter(user=request.user).values_list("ticket_id", flat=True))
+
+    posts = sorted(
+        list(visible_tickets) + list(visible_reviews),
+        key=lambda post: post.time_created,
+        reverse=True,
+    )
+
+    return render(request, "reviews/feed.html", locals())

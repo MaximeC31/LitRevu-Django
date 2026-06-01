@@ -1,15 +1,100 @@
 {% extends "base.html" %}
 {% block title %}
-  LITRevu | Flux de critiques
+   LITRevu | Flux de critiques
 {% endblock title %}
 {% block description %}
-  Parcourez les dernières critiques et recommandations publiées par la communauté LITRevu.
+   Parcourez les dernières critiques et recommandations publiées par la communauté LITRevu.
 {% endblock description %}
 {% block content %}
-  <section class="container mx-auto flex min-h-[calc(100vh-128px)] flex-col gap-6 px-6 py-12">
-    <a class="inline-flex items-center justify-center border-4 border-black bg-black px-6 py-3 text-sm font-bold uppercase text-white shadow-[4px_4px_0_#000] transition-transform duration-300 hover:scale-105"
-       href="{% url 'reviews:ticket_create' %}">Créer un ticket</a>
-    <a class="inline-flex items-center justify-center border-4 border-black bg-white px-6 py-3 text-sm font-bold uppercase text-black shadow-[4px_4px_0_#000] transition-transform duration-300 hover:scale-105"
-       href="{% url 'reviews:review_create' %}">Créer une critique</a>
-  </section>
+   <section class="container mx-auto flex min-h-[calc(100vh-128px)] flex-col gap-8 px-6 py-12">
+      <div class="flex flex-wrap gap-4">
+         <a class="inline-flex h-12 items-center justify-center border-4 border-black bg-black px-6 py-3 text-sm font-bold uppercase text-white shadow-[4px_4px_0_#000] transition-transform duration-300 hover:scale-105"
+            href="{% url 'reviews:ticket_create' %}">Demander une critique</a>
+         <a class="inline-flex h-12 items-center justify-center border-4 border-black bg-white px-6 py-3 text-sm font-bold uppercase text-black shadow-[4px_4px_0_#000] transition-transform duration-300 hover:scale-105"
+            href="{% url 'reviews:review_create' %}">Créer une critique</a>
+      </div>
+      <div class="flex flex-col gap-6">
+         {% if not posts %}
+            <article class="border-4 border-black bg-white p-16 text-center shadow-[4px_4px_0_#000]">
+               <p class="mb-4 text-xl font-bold">Votre flux est vide</p>
+               <p class="text-gray-700">Suivez d'autres utilisateurs ou créez votre premier ticket ou votre première critique.</p>
+            </article>
+         {% endif %}
+         {% for post in posts %}
+            {% if post.content_type == "TICKET" %}
+               <article class="border-4 border-black bg-white p-6 shadow-[4px_4px_0_#000]">
+                  <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+                     <div class="flex items-center gap-3 text-sm">
+                        <p class="bg-black px-8 py-2 font-bold text-white">TICKET</p>
+                        <span>par {{ post.user }}</span>
+                     </div>
+                     <time class="text-xs uppercase text-gray-500"
+                           datetime="{{ post.time_created|date:'c' }}">{{ post.time_created|date:"d F Y à H:i" }}</time>
+                  </div>
+                  <div class="flex flex-col gap-4">
+                     <div>
+                        <h2 class="mb-2 text-2xl font-bold">{{ post.title }}</h2>
+                        <p class="whitespace-pre-line text-base text-gray-700">{{ post.description }}</p>
+                     </div>
+                     {% if post.image %}
+                        <img src="{{ post.image.url }}"
+                             alt="Image du ticket {{ post.title }}"
+                             class="w-full max-w-sm border-2 border-black object-cover">
+                     {% endif %}
+                     {% comment %} {% if post.user != request.user and post.id not in reviewed_ticket_ids %}
+                        <div class="flex gap-4">
+                           <a href="{% url 'reviews:reviews_add_edit' post.id %}" class="inline-flex items-center justify-center border-2 border-black bg-white px-6 py-3 text-sm font-bold uppercase text-black shadow-[2px_2px_0_#000] transition-transform duration-300 hover:scale-105">Créer une critique</a>
+                     </div> {% endcomment %}
+                  {% endif %}
+               </div>
+            </article>
+         {% endif %}
+         {% if post.content_type == "REVIEW" %}
+            <article class="border-4 border-black bg-white p-6 shadow-[4px_4px_0_#000]">
+               <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+                  <div class="flex items-center gap-3 text-sm">
+                     <p class="bg-black px-8 py-2 font-bold text-white">REVIEW</p>
+                     <span>par {{ post.user }}</span>
+                  </div>
+                  <time class="text-xs uppercase text-gray-500"
+                        datetime="{{ post.time_created|date:'c' }}">{{ post.time_created|date:"d F Y à H:i" }}</time>
+               </div>
+               <div class="flex flex-col gap-4">
+                  <div>
+                     <p class="mb-2 text-sm font-bold uppercase">
+                        Note :
+                        {% for star in "12345" %}
+                           {% if forloop.counter <= post.rating %}
+                              ★
+                           {% else %}
+                              ☆
+                           {% endif %}
+                        {% endfor %}
+                     </p>
+                     <h2 class="mb-2 text-2xl font-bold">{{ post.headline }}</h2>
+                     <p class="whitespace-pre-line text-base text-gray-700">{{ post.body }}</p>
+                  </div>
+                  <article class="border-2 border-black bg-gray-100 p-4 shadow-[2px_2px_0_#000]">
+                     <div class="mb-3 flex flex-wrap items-center justify-between gap-3">
+                        <div class="flex items-center gap-3 text-sm">
+                           <p class="bg-black px-4 py-1 font-bold text-white">TICKET</p>
+                           <span>par {{ post.ticket.user }}</span>
+                        </div>
+                        <time class="text-xs uppercase text-gray-500"
+                              datetime="{{ post.ticket.time_created|date:'c' }}">{{ post.ticket.time_created|date:"d F Y à H:i" }}</time>
+                     </div>
+                     <h3 class="mb-2 text-xl font-bold">{{ post.ticket.title }}</h3>
+                     <p class="whitespace-pre-line text-base text-gray-700">{{ post.ticket.description }}</p>
+                     {% if post.ticket.image %}
+                        <img src="{{ post.ticket.image.url }}"
+                             alt="Image du ticket {{ post.ticket.title }}"
+                             class="mt-4 w-full max-w-sm border-2 border-black object-cover">
+                     {% endif %}
+                  </article>
+               </div>
+            </article>
+         {% endif %}
+      {% endfor %}
+   </div>
+</section>
 {% endblock content %}
