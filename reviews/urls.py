@@ -14,4 +14,7 @@ urlpatterns = [
     path("tickets/<int:ticket_id>/review/", views.reviews_add_edit, name="reviews_add_edit"),
     path("reviews/create", views.review_create, name="review_create"),
     path("reviews/<int:review_id>/delete/", views.review_delete, name="review_delete"),
+    path("subscriptions/", views.subscriptions, name="subscriptions"),
+    path("subscriptions/follow/", views.follow_user, name="follow_user"),
+    path("subscriptions/unfollow/", views.unfollow_user, name="unfollow_user"),
 ]

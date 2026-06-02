@@ -4,6 +4,7 @@ from .models import Ticket, Review
 from .forms import TicketForm, ReviewForm
 from django.views.decorators.http import require_http_methods
 import django.db.models as models
+from authentication.models import User, UserFollows
 
 
 def home(request):
@@ -142,9 +143,10 @@ def review_delete(request, review_id):
 def feed(request):
     followed_user_ids = request.user.following.values_list("followed_user_id", flat=True)
 
-    user_tickets = Ticket.objects.filter(user=request.user)
-    followed_tickets = Ticket.objects.filter(user_id__in=followed_user_ids)
-    visible_tickets = user_tickets | followed_tickets
+    visible_tickets = Ticket.objects.all()
+    # user_tickets = Ticket.objects.filter(user=request.user)
+    # followed_tickets = Ticket.objects.filter(user_id__in=followed_user_ids)
+    # visible_tickets = user_tickets | followed_tickets
 
     user_reviews = Review.objects.filter(user=request.user)
     followed_reviews = Review.objects.filter(user_id__in=followed_user_ids)
@@ -167,3 +169,50 @@ def feed(request):
     )
 
     return render(request, "reviews/feed.html", locals())
+
+
+@login_required
+def subscriptions(request):
+    followed_relations = request.user.following.select_related("followed_user").order_by(
+        "followed_user__username"
+    )
+    follower_relations = request.user.followed_by.select_related("user").order_by("user__username")
+
+    return render(request, "reviews/subscriptions.html", locals())
+
+
+@login_required
+@require_http_methods(["POST"])
+def follow_user(request):
+    username = request.POST.get("username", "").strip()
+
+    if not username:
+        return redirect("reviews:subscriptions")
+
+    try:
+        target_user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return redirect("reviews:subscriptions")
+
+    if target_user == request.user:
+        return redirect("reviews:subscriptions")
+
+    if UserFollows.objects.filter(user=request.user, followed_user=target_user).exists():
+        return redirect("reviews:subscriptions")
+
+    UserFollows.objects.create(user=request.user, followed_user=target_user)
+    return redirect("reviews:subscriptions")
+
+
+@login_required
+@require_http_methods(["POST"])
+def unfollow_user(request):
+    user_id = request.POST.get("user_id")
+
+    try:
+        follow_relation = UserFollows.objects.get(user=request.user, followed_user_id=user_id)
+    except UserFollows.DoesNotExist:
+        return redirect("reviews:subscriptions")
+
+    follow_relation.delete()
+    return redirect("reviews:subscriptions")
