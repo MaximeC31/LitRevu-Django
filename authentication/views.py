@@ -13,7 +13,8 @@ def signup_view(request):
     if request.method == "POST":
         form = SignupForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save()
+            login(request, user)
             return redirect("reviews:home")
 
     return render(request, "authentication/signup.html", {"form": form})

@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import Ticket, Review
 from .forms import TicketForm, ReviewForm
 from django.views.decorators.http import require_http_methods
-import django.db.models as models
 from authentication.models import User, UserFollows
+from django.db.models import Q
+import django.db.models as models
 
 
 def home(request):
@@ -31,9 +33,19 @@ def ticket_create(request):
 
 @login_required
 def posts_list(request):
-    tickets = Ticket.objects.filter(user=request.user).order_by("-time_created")
-    reviews = Review.objects.filter(user=request.user).order_by("-time_created")
-    return render(request, "reviews/posts_list.html", locals())
+    tickets = Ticket.objects.filter(user=request.user).annotate(
+        post_type=models.Value("ticket")
+    )
+    reviews = (
+        Review.objects.filter(user=request.user)
+        .select_related("ticket")
+        .annotate(post_type=models.Value("review"))
+    )
+
+    posts = [*tickets, *reviews]
+    posts.sort(key=lambda post: post.time_created, reverse=True)
+
+    return render(request, "reviews/posts_list.html", {"posts": posts})
 
 
 @login_required
@@ -46,12 +58,16 @@ def ticket_edit(request, ticket_id):
     form = TicketForm(instance=ticket)
 
     if request.method == "POST":
-        old_image = ticket.image
+        old_image = ticket.image.name if ticket.image else None
         form = TicketForm(request.POST, request.FILES, instance=ticket)
         if form.is_valid():
             ticket = form.save()
-            if form.cleaned_data.get("image") and old_image:
-                old_image.delete(save=False)
+            if (
+                form.cleaned_data.get("image")
+                and old_image
+                and old_image != ticket.image.name
+            ):
+                ticket.image.storage.delete(old_image)
             return redirect("reviews:posts_list")
 
     return render(request, "reviews/ticket_form.html", {"form": form})
@@ -94,7 +110,9 @@ def review_create(request):
             return redirect("reviews:feed")
 
     return render(
-        request, "reviews/review_form.html", {"ticket_form": ticket_form, "review_form": review_form}
+        request,
+        "reviews/review_form.html",
+        {"ticket_form": ticket_form, "review_form": review_form},
     )
 
 
@@ -105,7 +123,10 @@ def reviews_add_edit(request, ticket_id):
     except Ticket.DoesNotExist:
         return redirect("reviews:feed")
 
-    existing_review = Review.objects.filter(ticket=ticket, user=request.user).first()
+    existing_review = Review.objects.filter(
+        ticket=ticket,
+        user=request.user,
+    ).first()
     form = ReviewForm(instance=existing_review)
 
     if request.method == "POST":
@@ -141,42 +162,46 @@ def review_delete(request, review_id):
 
 @login_required
 def feed(request):
-    followed_user_ids = request.user.following.values_list("followed_user_id", flat=True)
-
-    visible_tickets = Ticket.objects.all()
-    # user_tickets = Ticket.objects.filter(user=request.user)
-    # followed_tickets = Ticket.objects.filter(user_id__in=followed_user_ids)
-    # visible_tickets = user_tickets | followed_tickets
-
-    user_reviews = Review.objects.filter(user=request.user)
-    followed_reviews = Review.objects.filter(user_id__in=followed_user_ids)
-    ticket_reviews = Review.objects.filter(ticket__user=request.user)
-    visible_reviews = user_reviews | followed_reviews | ticket_reviews
-
-    visible_tickets = visible_tickets.annotate(
-        content_type=models.Value("TICKET", output_field=models.CharField())
+    followed_users = request.user.following.values_list(
+        "followed_user",
+        flat=True,
     )
-    visible_reviews = visible_reviews.annotate(
-        content_type=models.Value("REVIEW", output_field=models.CharField())
+    reviewed_ticket = list(
+        Review.objects.filter(user=request.user).values_list(
+            "ticket",
+            flat=True,
+        )
     )
 
-    reviewed_ticket_ids = list(Review.objects.filter(user=request.user).values_list("ticket_id", flat=True))
-
-    posts = sorted(
-        list(visible_tickets) + list(visible_reviews),
-        key=lambda post: post.time_created,
-        reverse=True,
+    tickets = Ticket.objects.filter(
+        Q(user=request.user) | Q(user__in=followed_users)
+    ).annotate(post_type=models.Value("ticket"))
+    reviews = (
+        Review.objects.filter(
+            Q(user=request.user) | Q(user__in=followed_users)
+        )
+        .select_related("user", "ticket", "ticket__user")
+        .annotate(post_type=models.Value("review"))
     )
 
-    return render(request, "reviews/feed.html", locals())
+    posts = [*tickets, *reviews]
+    posts.sort(key=lambda post: post.time_created, reverse=True)
+
+    return render(
+        request,
+        "reviews/feed.html",
+        {"posts": posts, "reviewed_ticket": reviewed_ticket},
+    )
 
 
 @login_required
 def subscriptions(request):
-    followed_relations = request.user.following.select_related("followed_user").order_by(
-        "followed_user__username"
-    )
-    follower_relations = request.user.followed_by.select_related("user").order_by("user__username")
+    followed_relations = request.user.following.select_related(
+        "followed_user"
+    ).order_by("followed_user__username")
+    follower_relations = request.user.followed_by.select_related(
+        "user"
+    ).order_by("user__username")
 
     return render(request, "reviews/subscriptions.html", locals())
 
@@ -187,17 +212,24 @@ def follow_user(request):
     username = request.POST.get("username", "").strip()
 
     if not username:
+        messages.error(request, "Nom d'utilisateur requis.")
+        return redirect("reviews:subscriptions")
+
+    if username == request.user.username:
+        messages.error(request, "Action impossible.")
         return redirect("reviews:subscriptions")
 
     try:
         target_user = User.objects.get(username=username)
     except User.DoesNotExist:
+        messages.error(request, "Utilisateur introuvable.")
         return redirect("reviews:subscriptions")
 
-    if target_user == request.user:
-        return redirect("reviews:subscriptions")
-
-    if UserFollows.objects.filter(user=request.user, followed_user=target_user).exists():
+    if UserFollows.objects.filter(
+        user=request.user,
+        followed_user=target_user,
+    ).exists():
+        messages.error(request, "Déjà suivi.")
         return redirect("reviews:subscriptions")
 
     UserFollows.objects.create(user=request.user, followed_user=target_user)
@@ -210,9 +242,14 @@ def unfollow_user(request):
     user_id = request.POST.get("user_id")
 
     try:
-        follow_relation = UserFollows.objects.get(user=request.user, followed_user_id=user_id)
+        follow_relation = UserFollows.objects.get(
+            user=request.user,
+            followed_user_id=user_id,
+        )
     except UserFollows.DoesNotExist:
+        messages.error(request, "Abonnement introuvable.")
         return redirect("reviews:subscriptions")
 
     follow_relation.delete()
+    messages.success(request, "Abonnement supprimé.")
     return redirect("reviews:subscriptions")

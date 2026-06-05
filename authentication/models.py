@@ -8,9 +8,15 @@ class User(AbstractUser):
 
 
 class UserFollows(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="following", on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="following",
+        on_delete=models.CASCADE,
+    )
     followed_user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, related_name="followed_by", on_delete=models.CASCADE
+        settings.AUTH_USER_MODEL,
+        related_name="followed_by",
+        on_delete=models.CASCADE,
     )
 
     class Meta:
